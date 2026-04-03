@@ -34,13 +34,13 @@
     color: var(--text);
     font-family: var(--sans);
     min-height: 100vh;
-    padding-bottom: calc(env(safe-area-inset-bottom) + 20px);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 24px);
   }
 
   /* ── Header ── */
   .header {
     position: sticky; top: 0; z-index: 100;
-    background: rgba(10,10,15,0.90);
+    background: rgba(10,10,15,0.92);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
@@ -54,19 +54,25 @@
   .logo-name { font-family: var(--mono); font-size: 17px; font-weight: 500; letter-spacing: -0.4px; }
   .logo-dot {
     width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
-    animation: pulse 2s ease-in-out infinite;
+    animation: pulse 2s ease-in-out infinite; flex-shrink: 0;
   }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.7)} }
 
-  .header-meta {
-    margin-top: 8px;
+  .header-sub {
+    margin-top: 6px;
     display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
   }
-  .meta-label { font-size: 11px; color: var(--text-muted); font-family: var(--mono); }
-  .meta-count {
-    font-size: 11px; color: var(--accent); font-family: var(--mono);
-    background: rgba(79,143,255,0.12); padding: 2px 8px; border-radius: 10px;
+  .meta-pill {
+    font-size: 11px; font-family: var(--mono);
+    color: var(--text-muted);
   }
+  .meta-pill.accent {
+    color: var(--accent);
+    background: rgba(79,143,255,0.12);
+    padding: 2px 8px; border-radius: 10px;
+  }
+  .meta-pill.fresh { color: var(--buy); }
+  .meta-pill.stale { color: var(--watch); }
 
   /* ── Scan Buttons ── */
   .scan-bar {
@@ -81,7 +87,7 @@
     color: var(--text);
     font-family: var(--sans);
     font-size: 13px; font-weight: 500;
-    padding: 10px 8px;
+    padding: 11px 8px;
     border-radius: 12px;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -89,15 +95,15 @@
     -webkit-user-select: none;
   }
   .scan-btn:active { transform: scale(0.96); }
-  .scan-btn:disabled { opacity: 0.45; }
-  .scan-btn.dax-btn { border-color: rgba(79,143,255,0.3); }
-  .scan-btn.us-btn  { border-color: rgba(0,200,150,0.3); color: var(--buy); }
+  .scan-btn:disabled { opacity: 0.4; }
+  .scan-btn.dax-btn { border-color: rgba(79,143,255,0.25); }
+  .scan-btn.us-btn  { border-color: rgba(0,200,150,0.25); }
 
   .spin-icon { display: inline-block; font-size: 14px; }
   .loading .spin-icon { animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ── Filter tabs ── */
+  /* ── Filter ── */
   .filter-bar {
     padding: 10px 18px 0;
     display: flex; gap: 8px;
@@ -130,33 +136,43 @@
     background: var(--surface); border: 1px solid var(--border);
     border-radius: 14px; padding: 13px 15px;
     display: grid; grid-template-columns: 1fr auto;
-    gap: 8px 12px; align-items: start;
+    gap: 6px 12px; align-items: start;
     animation: fadeUp 0.3s ease both;
   }
   @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-  .card:nth-child(1){animation-delay:0.00s}
-  .card:nth-child(2){animation-delay:0.05s}
-  .card:nth-child(3){animation-delay:0.10s}
-  .card:nth-child(4){animation-delay:0.15s}
-  .card:nth-child(5){animation-delay:0.20s}
-  .card:nth-child(6){animation-delay:0.25s}
-  .card:nth-child(7){animation-delay:0.30s}
-  .card:nth-child(8){animation-delay:0.35s}
+  .card:nth-child(1){animation-delay:0.00s} .card:nth-child(2){animation-delay:0.05s}
+  .card:nth-child(3){animation-delay:0.10s} .card:nth-child(4){animation-delay:0.15s}
+  .card:nth-child(5){animation-delay:0.20s} .card:nth-child(6){animation-delay:0.25s}
+  .card:nth-child(7){animation-delay:0.30s} .card:nth-child(8){animation-delay:0.35s}
 
   .card.buy-zone {
     border-color: rgba(0,200,150,0.22);
-    background: linear-gradient(135deg, var(--surface) 60%, rgba(0,200,150,0.06) 100%);
+    background: linear-gradient(135deg, var(--surface) 60%, rgba(0,200,150,0.05) 100%);
   }
 
   .card-left { min-width: 0; }
+
+  .card-top { display: flex; align-items: baseline; gap: 8px; }
   .card-ticker { font-family: var(--mono); font-size: 15px; font-weight: 500; letter-spacing: -0.3px; }
-  .card-name { font-size: 12px; color: var(--text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 185px; }
+  .card-name {
+    font-size: 12px; color: var(--text-muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;
+  }
+
+  /* Datenstand-Zeile unter dem Namen */
+  .card-timestamp {
+    font-size: 10px; font-family: var(--mono);
+    margin-top: 3px;
+  }
+  .card-timestamp.fresh { color: var(--buy); }
+  .card-timestamp.stale { color: var(--watch); }
+  .card-timestamp.old   { color: var(--red); }
 
   .card-stats { display: flex; gap: 14px; margin-top: 10px; align-items: center; }
   .stat { display: flex; flex-direction: column; gap: 2px; }
   .stat-label { font-size: 9px; font-family: var(--mono); letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-dim); }
   .stat-value { font-family: var(--mono); font-size: 13px; color: var(--text); font-weight: 500; }
-  .rsi-hot { color: var(--buy); }
+  .rsi-hot  { color: var(--buy); }
   .rsi-warm { color: var(--watch); }
   .stat-divider { width: 1px; height: 28px; background: var(--border); }
 
@@ -165,10 +181,10 @@
 
   .signal-badge {
     font-size: 10px; font-family: var(--mono); font-weight: 500;
-    letter-spacing: 0.3px; padding: 5px 10px; border-radius: 8px; white-space: nowrap;
+    padding: 5px 10px; border-radius: 8px; white-space: nowrap;
   }
-  .signal-buy  { background: var(--buy-bg);   color: var(--buy);   border: 1px solid rgba(0,200,150,0.28); }
-  .signal-watch{ background: var(--watch-bg); color: var(--watch); border: 1px solid rgba(240,180,41,0.28); }
+  .signal-buy   { background: var(--buy-bg);   color: var(--buy);   border: 1px solid rgba(0,200,150,0.28); }
+  .signal-watch { background: var(--watch-bg); color: var(--watch); border: 1px solid rgba(240,180,41,0.28); }
 
   .target-line {
     grid-column: 1/-1; display: flex; align-items: center; gap: 8px;
@@ -178,77 +194,74 @@
   .target-price { font-size: 12px; font-family: var(--mono); color: var(--accent); font-weight: 500; }
   .target-pct   { font-size: 10px; font-family: var(--mono); color: var(--text-dim); margin-left: auto; }
 
+  /* ── Empty / Error ── */
   .empty-state { text-align: center; padding: 50px 20px; }
   .empty-icon  { font-size: 34px; margin-bottom: 12px; }
   .empty-title { font-size: 15px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
   .empty-sub   { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
 
+  .error-box {
+    background: rgba(255,79,106,0.07); border: 1px solid rgba(255,79,106,0.2);
+    border-radius: 12px; padding: 13px 15px;
+    font-size: 12px; color: var(--red); font-family: var(--mono); line-height: 1.6;
+  }
+
   .skeleton-card {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: 14px; height: 108px;
+    border-radius: 14px; height: 112px;
     animation: shimmer 1.4s ease-in-out infinite;
   }
   @keyframes shimmer { 0%,100%{opacity:0.35} 50%{opacity:0.75} }
-
-  .api-banner {
-    background: rgba(79,143,255,0.07); border: 1px solid rgba(79,143,255,0.2);
-    border-radius: 12px; padding: 12px 14px;
-    font-size: 12px; color: var(--accent); font-family: var(--mono);
-    line-height: 1.7; margin-bottom: 14px;
-  }
 
   .spacer { height: 20px; }
 
   /* ── Debug Panel ── */
   .debug-toggle {
     display: flex; align-items: center; justify-content: space-between;
-    margin-top: 24px; margin-bottom: 8px;
+    margin-top: 26px; margin-bottom: 8px;
     cursor: pointer; -webkit-user-select: none;
   }
   .debug-toggle-label {
     font-size: 10px; font-family: var(--mono); letter-spacing: 1.5px;
     text-transform: uppercase; color: var(--text-dim);
   }
-  .debug-toggle-icon { font-size: 12px; color: var(--text-dim); transition: transform 0.2s; }
-  .debug-toggle-icon.open { transform: rotate(180deg); }
+  .debug-icon { font-size: 11px; color: var(--text-dim); transition: transform 0.2s; }
+  .debug-icon.open { transform: rotate(180deg); }
 
   .debug-panel { display: none; }
   .debug-panel.visible { display: block; }
 
-  .debug-row {
-    display: grid;
-    grid-template-columns: 70px 50px 55px 55px 1fr;
-    gap: 4px;
-    font-size: 11px; font-family: var(--mono);
-    padding: 7px 10px;
-    border-radius: 8px;
-    margin-bottom: 3px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    align-items: center;
-  }
-  .debug-row.ok   { border-color: rgba(0,200,150,0.2); }
-  .debug-row.skip { border-color: rgba(240,180,41,0.15); opacity: 0.65; }
-  .debug-row.err  { border-color: rgba(255,79,106,0.2); opacity: 0.65; }
-
-  .debug-ticker { color: var(--text); font-weight: 500; }
-  .debug-rsi    { color: var(--watch); }
-  .debug-rsi.good { color: var(--buy); }
-  .debug-price  { color: var(--text-muted); }
-  .debug-sma    { color: var(--text-muted); }
-  .debug-status { color: var(--text-dim); font-size: 10px; }
-  .debug-status.ok    { color: var(--buy); }
-  .debug-status.skip  { color: var(--watch); }
-  .debug-status.err   { color: var(--red); }
-
   .debug-header {
     display: grid;
-    grid-template-columns: 70px 50px 55px 55px 1fr;
+    grid-template-columns: 68px 44px 54px 54px 1fr;
     gap: 4px;
     font-size: 9px; font-family: var(--mono); letter-spacing: 0.8px;
     text-transform: uppercase; color: var(--text-dim);
-    padding: 0 10px 6px;
+    padding: 0 10px 5px;
   }
+
+  .debug-row {
+    display: grid;
+    grid-template-columns: 68px 44px 54px 54px 1fr;
+    gap: 4px;
+    font-size: 11px; font-family: var(--mono);
+    padding: 7px 10px;
+    border-radius: 8px; margin-bottom: 3px;
+    background: var(--surface); border: 1px solid var(--border);
+    align-items: center;
+  }
+  .debug-row.ok   { border-color: rgba(0,200,150,0.2); }
+  .debug-row.skip { opacity: 0.6; }
+  .debug-row.err  { border-color: rgba(255,79,106,0.2); opacity: 0.65; }
+
+  .d-ticker { color: var(--text); font-weight: 500; }
+  .d-rsi    { color: var(--watch); }
+  .d-rsi.low{ color: var(--buy); }
+  .d-val    { color: var(--text-muted); }
+  .d-status { font-size: 10px; }
+  .d-status.ok   { color: var(--buy); }
+  .d-status.skip { color: var(--watch); }
+  .d-status.err  { color: var(--red); }
 </style>
 </head>
 <body>
@@ -259,19 +272,20 @@
       <span class="logo-name">SwingRadar</span>
       <div class="logo-dot"></div>
     </div>
+    <span style="font-size:11px;font-family:var(--mono);color:var(--text-dim)">via Yahoo Finance</span>
   </div>
-  <div class="header-meta">
-    <span class="meta-label" id="timestamp">–</span>
-    <span class="meta-count" id="resultCount">–</span>
+  <div class="header-sub">
+    <span class="meta-pill" id="scanTime">Noch kein Scan</span>
+    <span class="meta-pill accent" id="resultCount">–</span>
   </div>
 </div>
 
 <div class="scan-bar">
   <button class="scan-btn dax-btn" id="btnDAX" onclick="scanGroup('dax')">
-    <span class="spin-icon">🇩🇪</span> DAX / DE scannen
+    <span class="spin-icon">🇩🇪</span> DAX / DE
   </button>
   <button class="scan-btn us-btn" id="btnUS" onclick="scanGroup('us')">
-    <span class="spin-icon">🇺🇸</span> US scannen
+    <span class="spin-icon">🇺🇸</span> US
   </button>
 </div>
 
@@ -284,76 +298,234 @@
 </div>
 
 <div class="content">
-  <div id="apiBanner" class="api-banner" style="display:none;">
-    ⚠️ Kein API-Key — trage deinen FMP-Key in die Variable <strong>API_KEY</strong> ein.
-  </div>
-
   <div id="output">
     <div class="empty-state">
       <div class="empty-icon">📡</div>
       <div class="empty-title">Bereit</div>
-      <div class="empty-sub">DAX/DE oder US scannen — oder beide.</div>
+      <div class="empty-sub">DAX/DE oder US scannen — kein API-Key nötig.</div>
     </div>
   </div>
 
-  <!-- Debug Panel -->
   <div class="debug-toggle" onclick="toggleDebug()">
     <span class="debug-toggle-label">Debug · API-Rohdaten</span>
-    <span class="debug-toggle-icon" id="debugIcon">▼</span>
+    <span class="debug-icon" id="debugIcon">▼</span>
   </div>
   <div class="debug-panel" id="debugPanel">
-    <div style="font-size:11px;color:var(--text-dim);font-family:var(--mono);padding:8px 2px;">
+    <div style="font-size:11px;color:var(--text-dim);font-family:var(--mono);padding:6px 2px;">
       Noch kein Scan gestartet.
     </div>
   </div>
-
 </div>
 
 <script>
-// ──────────────────────────────────────────────────────
-//  👇  HIER DEINEN FMP API-KEY EINTRAGEN
-const API_KEY = "TW9XCUkDJ4qQOgrfOnW1Iebkd8eyiz7G";
-// ──────────────────────────────────────────────────────
-
-const BASE = "https://financialmodelingprep.com/api/v3";
 const SELL_TARGET_PCT = 5;
+const RSI_PERIOD      = 14;
+const SMA_PERIOD      = 20;
+const HISTORY_DAYS    = 40; // genug für RSI14 + SMA20
+
+// Yahoo Finance Proxy — funktioniert ohne API-Key
+// Falls Yahoo blockiert, wird ein CORS-Proxy als Fallback versucht
+const YAHOO_URL = ticker =>
+  `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=${HISTORY_DAYS}d`;
+const PROXY_URL = ticker =>
+  `https://corsproxy.io/?${encodeURIComponent(YAHOO_URL(ticker))}`;
 
 const WATCHLIST = [
-  // ── DAX / MDAX ── (FMP-Ticker ohne .DE — falls kein Ergebnis, .DE-Suffix probieren)
-  { ticker: "SAP",   name: "SAP SE",             group: "dax", cur: "€" },
-  { ticker: "SIE",   name: "Siemens AG",          group: "dax", cur: "€" },
-  { ticker: "ALV",   name: "Allianz SE",           group: "dax", cur: "€" },
-  { ticker: "DTE",   name: "Deutsche Telekom",     group: "dax", cur: "€" },
-  { ticker: "MUV2",  name: "Munich Re",            group: "dax", cur: "€" },
-  { ticker: "BAS",   name: "BASF SE",              group: "dax", cur: "€" },
-  { ticker: "BMW",   name: "BMW AG",               group: "dax", cur: "€" },
-  { ticker: "MBG",   name: "Mercedes-Benz",        group: "dax", cur: "€" },
-  { ticker: "RWE",   name: "RWE AG",               group: "dax", cur: "€" },
-  { ticker: "BAYN",  name: "Bayer AG",             group: "dax", cur: "€" },
-  { ticker: "DBK",   name: "Deutsche Bank",        group: "dax", cur: "€" },
-  { ticker: "IFX",   name: "Infineon",             group: "dax", cur: "€" },
-  { ticker: "DHL",   name: "DHL Group",            group: "dax", cur: "€" },
-  { ticker: "MTX",   name: "MTU Aero Engines",     group: "dax", cur: "€" },
-  { ticker: "HEI",   name: "Heidelberg Materials", group: "dax", cur: "€" },
-  // ── US ──────────────────────────────────────────
-  { ticker: "O",     name: "Realty Income",        group: "us",  cur: "$" },
-  { ticker: "MAIN",  name: "Main Street Capital",  group: "us",  cur: "$" },
-  { ticker: "ARCC",  name: "Ares Capital",         group: "us",  cur: "$" },
-  { ticker: "MSFT",  name: "Microsoft",            group: "us",  cur: "$" },
-  { ticker: "AAPL",  name: "Apple",                group: "us",  cur: "$" },
-  { ticker: "NVDA",  name: "NVIDIA",               group: "us",  cur: "$" },
-  { ticker: "DIS",   name: "Walt Disney",          group: "us",  cur: "$" },
-  { ticker: "NTDOY", name: "Nintendo ADR",         group: "us",  cur: "$" },
-  { ticker: "PLUG",  name: "Plug Power",           group: "us",  cur: "$" },
-  { ticker: "VLNA",  name: "Valneva ADR",          group: "us",  cur: "$" },
+  // ── DAX / MDAX (Yahoo-Ticker für XETRA: .DE Suffix) ──
+  { ticker: "SAP.DE",   name: "SAP SE",             group: "dax", cur: "€" },
+  { ticker: "SIE.DE",   name: "Siemens AG",          group: "dax", cur: "€" },
+  { ticker: "ALV.DE",   name: "Allianz SE",           group: "dax", cur: "€" },
+  { ticker: "DTE.DE",   name: "Deutsche Telekom",     group: "dax", cur: "€" },
+  { ticker: "MUV2.DE",  name: "Munich Re",            group: "dax", cur: "€" },
+  { ticker: "BAS.DE",   name: "BASF SE",              group: "dax", cur: "€" },
+  { ticker: "BMW.DE",   name: "BMW AG",               group: "dax", cur: "€" },
+  { ticker: "MBG.DE",   name: "Mercedes-Benz",        group: "dax", cur: "€" },
+  { ticker: "RWE.DE",   name: "RWE AG",               group: "dax", cur: "€" },
+  { ticker: "BAYN.DE",  name: "Bayer AG",             group: "dax", cur: "€" },
+  { ticker: "DBK.DE",   name: "Deutsche Bank",        group: "dax", cur: "€" },
+  { ticker: "IFX.DE",   name: "Infineon",             group: "dax", cur: "€" },
+  { ticker: "DHL.DE",   name: "DHL Group",            group: "dax", cur: "€" },
+  { ticker: "MTX.DE",   name: "MTU Aero Engines",     group: "dax", cur: "€" },
+  { ticker: "HEI.DE",   name: "Heidelberg Materials", group: "dax", cur: "€" },
+  // ── US ──────────────────────────────────────────────
+  { ticker: "O",        name: "Realty Income",        group: "us",  cur: "$" },
+  { ticker: "MAIN",     name: "Main Street Capital",  group: "us",  cur: "$" },
+  { ticker: "ARCC",     name: "Ares Capital",         group: "us",  cur: "$" },
+  { ticker: "MSFT",     name: "Microsoft",            group: "us",  cur: "$" },
+  { ticker: "AAPL",     name: "Apple",                group: "us",  cur: "$" },
+  { ticker: "NVDA",     name: "NVIDIA",               group: "us",  cur: "$" },
+  { ticker: "DIS",      name: "Walt Disney",          group: "us",  cur: "$" },
+  { ticker: "NTDOY",    name: "Nintendo ADR",         group: "us",  cur: "$" },
+  { ticker: "PLUG",     name: "Plug Power",           group: "us",  cur: "$" },
+  { ticker: "VLNA",     name: "Valneva ADR",          group: "us",  cur: "$" },
 ];
 
+// ── State ────────────────────────────────────────────
 let allResults   = [];
 let debugRows    = [];
 let activeFilter = "all";
 let debugOpen    = false;
 
-// ── Filter ──────────────────────────────────────────
+// ── RSI Berechnung ───────────────────────────────────
+function calcRSI(closes, period = RSI_PERIOD) {
+  if (closes.length < period + 1) return null;
+  let gains = 0, losses = 0;
+  for (let i = 1; i <= period; i++) {
+    const diff = closes[i] - closes[i - 1];
+    if (diff >= 0) gains  += diff;
+    else           losses -= diff;
+  }
+  let avgGain = gains  / period;
+  let avgLoss = losses / period;
+  // Wilder Smoothing für die restlichen Kerzen
+  for (let i = period + 1; i < closes.length; i++) {
+    const diff = closes[i] - closes[i - 1];
+    avgGain = (avgGain * (period - 1) + Math.max(diff, 0)) / period;
+    avgLoss = (avgLoss * (period - 1) + Math.max(-diff, 0)) / period;
+  }
+  if (avgLoss === 0) return 100;
+  const rs = avgGain / avgLoss;
+  return parseFloat((100 - 100 / (1 + rs)).toFixed(1));
+}
+
+// ── SMA Berechnung ───────────────────────────────────
+function calcSMA(closes, period = SMA_PERIOD) {
+  if (closes.length < period) return null;
+  const slice = closes.slice(-period);
+  return parseFloat((slice.reduce((a, b) => a + b, 0) / period).toFixed(2));
+}
+
+// ── Datum formatieren ────────────────────────────────
+function fmtDate(unixTs) {
+  // Yahoo liefert Unix-Timestamp in Sekunden
+  const d = new Date(unixTs * 1000);
+  return d.toLocaleDateString("de-DE", {
+    day: "2-digit", month: "2-digit", year: "numeric"
+  }) + ", " + d.toLocaleTimeString("de-DE", {
+    hour: "2-digit", minute: "2-digit"
+  });
+}
+
+// Prüfe wie alt die Daten sind (in Stunden)
+function dataAgeHours(unixTs) {
+  return (Date.now() / 1000 - unixTs) / 3600;
+}
+
+function ageClass(hours) {
+  if (hours < 30)  return "fresh"; // aktuell (heutiger/gestriger Börsenschluss)
+  if (hours < 72)  return "stale"; // 1-3 Tage alt
+  return "old";                     // älter
+}
+
+// ── Yahoo Finance Fetch ──────────────────────────────
+async function fetchYahoo(ticker) {
+  // Erst direkt versuchen, dann mit Proxy
+  let data = null;
+  try {
+    const res = await fetch(YAHOO_URL(ticker), { headers: { Accept: "application/json" } });
+    if (res.ok) data = await res.json();
+  } catch (_) {}
+
+  if (!data) {
+    // Fallback: CORS-Proxy
+    const res = await fetch(PROXY_URL(ticker));
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    data = await res.json();
+  }
+
+  const chart  = data?.chart?.result?.[0];
+  if (!chart) throw new Error("Keine Daten");
+
+  const meta      = chart.meta;
+  const closes    = chart.indicators?.quote?.[0]?.close;
+  const timestamps = chart.timestamp;
+
+  if (!closes || closes.length < RSI_PERIOD + 2) throw new Error("Zu wenig Daten");
+
+  // Null-Werte (Feiertage) herausfiltern
+  const valid = closes.map((c, i) => ({ c, t: timestamps[i] })).filter(x => x.c !== null);
+  const cleanCloses = valid.map(x => x.c);
+  const lastTs      = valid[valid.length - 1].t;
+  const lastClose   = cleanCloses[cleanCloses.length - 1];
+
+  const rsi   = calcRSI(cleanCloses);
+  const sma20 = calcSMA(cleanCloses);
+
+  return { price: lastClose, rsi, sma20, lastTs, currency: meta.currency };
+}
+
+// ── Scan ─────────────────────────────────────────────
+async function scanGroup(group) {
+  const btnId = group === "dax" ? "btnDAX" : "btnUS";
+  const btn   = document.getElementById(btnId);
+  btn.classList.add("loading");
+  btn.disabled = true;
+
+  const list = WATCHLIST.filter(s => s.group === group);
+
+  document.getElementById("output").innerHTML = `
+    <div class="section-label">Scanne ${list.length} ${group === "dax" ? "DAX" : "US"}-Werte …</div>
+    <div class="card-list">${[1,2,3].map(() => '<div class="skeleton-card"></div>').join("")}</div>`;
+
+  // Ergebnisse dieser Gruppe zurücksetzen
+  allResults = allResults.filter(r => r.group !== group);
+  debugRows  = debugRows.filter(d => !list.find(s => s.ticker === d.ticker));
+
+  for (const stock of list) {
+    let dbg = { ticker: stock.ticker, rsi: null, price: null, sma20: null, ts: null, status: "–", rowClass: "skip" };
+    try {
+      const { price, rsi, sma20, lastTs } = await fetchYahoo(stock.ticker);
+
+      dbg.price = price;
+      dbg.rsi   = rsi;
+      dbg.sma20 = sma20;
+      dbg.ts    = lastTs;
+
+      if (rsi === null)         { dbg.status = "kein RSI";         dbg.rowClass = "err"; }
+      else if (rsi >= 45)       { dbg.status = `RSI ${rsi} ≥ 45`; dbg.rowClass = "skip"; }
+      else if (sma20 && price <= sma20) { dbg.status = "Kurs < SMA20"; dbg.rowClass = "skip"; }
+      else {
+        dbg.status   = sma20 ? "✓ Signal" : "✓ (kein SMA)";
+        dbg.rowClass = "ok";
+        allResults.push({
+          ticker:  stock.ticker,
+          name:    stock.name,
+          group:   stock.group,
+          cur:     stock.cur,
+          price,
+          rsi,
+          sma20,
+          lastTs,
+          signal:  rsi < 35 ? "buy" : "watch",
+          target:  parseFloat((price * (1 + SELL_TARGET_PCT / 100)).toFixed(2))
+        });
+      }
+    } catch (e) {
+      dbg.status   = e.message;
+      dbg.rowClass = "err";
+    }
+    debugRows.push(dbg);
+    renderDebug();
+  }
+
+  allResults.sort((a, b) => {
+    if (a.signal !== b.signal) return a.signal === "buy" ? -1 : 1;
+    return a.rsi - b.rsi;
+  });
+
+  const now = new Date();
+  document.getElementById("scanTime").textContent =
+    `Scan ${now.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`;
+
+  btn.classList.remove("loading");
+  btn.disabled = false;
+
+  renderCards(allResults);
+
+  if (allResults.filter(r => r.group === group).length === 0 && !debugOpen) toggleDebug();
+}
+
+// ── Render Cards ─────────────────────────────────────
 function setFilter(f, el) {
   activeFilter = f;
   document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
@@ -363,7 +535,6 @@ function setFilter(f, el) {
 
 function applyFilter(results) {
   return results.filter(r => {
-    if (activeFilter === "all")   return true;
     if (activeFilter === "buy")   return r.signal === "buy";
     if (activeFilter === "watch") return r.signal === "watch";
     if (activeFilter === "dax")   return r.group === "dax";
@@ -372,163 +543,29 @@ function applyFilter(results) {
   });
 }
 
-// ── Debug Panel ─────────────────────────────────────
-function toggleDebug() {
-  debugOpen = !debugOpen;
-  document.getElementById("debugPanel").classList.toggle("visible", debugOpen);
-  document.getElementById("debugIcon").classList.toggle("open", debugOpen);
-}
-
-function renderDebug() {
-  const panel = document.getElementById("debugPanel");
-  if (debugRows.length === 0) {
-    panel.innerHTML = `<div style="font-size:11px;color:var(--text-dim);font-family:var(--mono);padding:8px 2px;">Noch kein Scan.</div>`;
-    return;
-  }
-  let html = `
-    <div class="debug-header">
-      <span>Ticker</span><span>RSI</span><span>Kurs</span><span>SMA20</span><span>Status</span>
-    </div>`;
-  for (const d of debugRows) {
-    const rsiClass = d.rsi !== null && d.rsi < 35 ? "good" : "";
-    html += `
-    <div class="debug-row ${d.rowClass}">
-      <span class="debug-ticker">${d.ticker}</span>
-      <span class="debug-rsi ${rsiClass}">${d.rsi !== null ? d.rsi.toFixed(1) : "–"}</span>
-      <span class="debug-price">${d.price !== null ? d.price.toFixed(2) : "–"}</span>
-      <span class="debug-sma">${d.sma20 !== null ? d.sma20.toFixed(2) : "–"}</span>
-      <span class="debug-status ${d.rowClass}">${d.status}</span>
-    </div>`;
-  }
-  panel.innerHTML = html;
-}
-
-// ── API Calls ────────────────────────────────────────
-async function apiFetch(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
-}
-
-async function fetchStockData(ticker) {
-  const [quoteData, rsiData, smaData] = await Promise.all([
-    apiFetch(`${BASE}/quote/${ticker}?apikey=${API_KEY}`),
-    apiFetch(`${BASE}/technical_indicator/daily/${ticker}?period=14&type=rsi&apikey=${API_KEY}`),
-    apiFetch(`${BASE}/technical_indicator/daily/${ticker}?period=20&type=sma&apikey=${API_KEY}`)
-  ]);
-  const quote = Array.isArray(quoteData) && quoteData[0] ? quoteData[0] : null;
-  const rsi   = Array.isArray(rsiData)   && rsiData[0]   ? rsiData[0].rsi   : null;
-  const sma20 = Array.isArray(smaData)   && smaData[0]   ? smaData[0].sma   : null;
-  return { quote, rsi, sma20 };
-}
-
-// ── Scan ─────────────────────────────────────────────
-async function scanGroup(group) {
-  if (!API_KEY || API_KEY === "DEIN_API_KEY_HIER") {
-    document.getElementById("apiBanner").style.display = "block";
-    return;
-  }
-  document.getElementById("apiBanner").style.display = "none";
-
-  const btnId = group === "dax" ? "btnDAX" : "btnUS";
-  const btn   = document.getElementById(btnId);
-  btn.classList.add("loading");
-  btn.disabled = true;
-
-  const list = WATCHLIST.filter(s => s.group === group);
-
-  // Skeleton
-  document.getElementById("output").innerHTML = `
-    <div class="section-label">Scanne ${list.length} ${group.toUpperCase()}-Werte …</div>
-    <div class="card-list">${[1,2,3].map(()=>'<div class="skeleton-card"></div>').join("")}</div>`;
-
-  // Remove previous results for this group
-  allResults = allResults.filter(r => r.group !== group);
-  debugRows  = debugRows.filter(d => !list.find(s => s.ticker === d.ticker));
-
-  for (const stock of list) {
-    let debugEntry = { ticker: stock.ticker, rsi: null, price: null, sma20: null, status: "–", rowClass: "skip" };
-    try {
-      const { quote, rsi, sma20 } = await fetchStockData(stock.ticker);
-
-      debugEntry.price = quote ? quote.price : null;
-      debugEntry.rsi   = rsi;
-      debugEntry.sma20 = sma20;
-
-      if (!quote)       { debugEntry.status = "kein Kurs";   debugEntry.rowClass = "err";  }
-      else if (!rsi)    { debugEntry.status = "kein RSI";    debugEntry.rowClass = "err";  }
-      else if (rsi >= 45){ debugEntry.status = `RSI ${rsi.toFixed(1)} ≥ 45`; debugEntry.rowClass = "skip"; }
-      else if (sma20 && quote.price <= sma20) {
-        debugEntry.status = `Kurs < SMA20`; debugEntry.rowClass = "skip";
-      } else {
-        // Passt → aufnehmen (SMA20 fehlt → trotzdem anzeigen mit Hinweis)
-        const noSMA = sma20 === null;
-        debugEntry.status = noSMA ? "✓ (kein SMA)" : "✓ Signal";
-        debugEntry.rowClass = "ok";
-
-        allResults.push({
-          ticker: stock.ticker,
-          name:   stock.name,
-          group:  stock.group,
-          cur:    stock.cur,
-          price:  quote.price,
-          rsi:    parseFloat(rsi.toFixed(1)),
-          sma20,
-          signal: rsi < 35 ? "buy" : "watch",
-          target: parseFloat((quote.price * (1 + SELL_TARGET_PCT / 100)).toFixed(2))
-        });
-      }
-    } catch (e) {
-      debugEntry.status   = e.message;
-      debugEntry.rowClass = "err";
-    }
-    debugRows.push(debugEntry);
-    renderDebug(); // live update
-  }
-
-  // Sortieren
-  allResults.sort((a,b) => {
-    if (a.signal !== b.signal) return a.signal === "buy" ? -1 : 1;
-    return a.rsi - b.rsi;
-  });
-
-  const now = new Date();
-  document.getElementById("timestamp").textContent =
-    `${group.toUpperCase()} · ${now.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}`;
-
-  btn.classList.remove("loading");
-  btn.disabled = false;
-
-  renderCards(allResults);
-
-  // Debug automatisch öffnen wenn keine Treffer
-  if (allResults.filter(r => r.group === group).length === 0 && !debugOpen) {
-    toggleDebug();
-  }
-}
-
-// ── Render Cards ─────────────────────────────────────
 function renderCards(results) {
   const filtered  = applyFilter(results);
   const buyZone   = filtered.filter(r => r.signal === "buy");
   const watchZone = filtered.filter(r => r.signal === "watch");
 
   document.getElementById("resultCount").textContent =
-    filtered.length === 0 ? "Kein Treffer" : `${filtered.length} Signal${filtered.length > 1 ? "e" : ""}`;
+    filtered.length === 0 ? "Kein Treffer" : `${filtered.length} Signal${filtered.length !== 1 ? "e" : ""}`;
 
   const out = document.getElementById("output");
 
-  if (filtered.length === 0) {
+  if (filtered.length === 0 && allResults.length > 0) {
     out.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">📡</div>
         <div class="empty-title">Keine Signale</div>
         <div class="empty-sub">RSI &lt; 45 + Kurs über SMA20<br>aktuell kein Treffer.<br><br>
-          <span style="color:var(--accent)">→ Debug-Panel öffnen für Details</span>
+          <span style="color:var(--accent)">→ Debug-Panel für Details öffnen</span>
         </div>
       </div>`;
     return;
   }
+
+  if (filtered.length === 0) return;
 
   let html = "";
   if (buyZone.length > 0) {
@@ -546,12 +583,19 @@ function renderCards(results) {
 function fmt(p) { return p < 10 ? p.toFixed(3) : p.toFixed(2); }
 
 function buildCard(r) {
-  const isBuy = r.signal === "buy";
+  const isBuy  = r.signal === "buy";
+  const age    = r.lastTs ? dataAgeHours(r.lastTs) : 999;
+  const cls    = ageClass(age);
+  const tsText = r.lastTs ? `Daten: ${fmtDate(r.lastTs)}` : "Datum unbekannt";
+
   return `
   <div class="card ${isBuy ? "buy-zone" : ""}">
     <div class="card-left">
-      <div class="card-ticker">${r.ticker}</div>
-      <div class="card-name">${r.name}</div>
+      <div class="card-top">
+        <span class="card-ticker">${r.ticker.replace(".DE","")}</span>
+        <span class="card-name">${r.name}</span>
+      </div>
+      <div class="card-timestamp ${cls}">⏱ ${tsText}</div>
       <div class="card-stats">
         <div class="stat">
           <span class="stat-label">RSI 14</span>
@@ -576,6 +620,36 @@ function buildCard(r) {
       <span class="target-pct">+${SELL_TARGET_PCT}%</span>
     </div>
   </div>`;
+}
+
+// ── Debug Panel ──────────────────────────────────────
+function toggleDebug() {
+  debugOpen = !debugOpen;
+  document.getElementById("debugPanel").classList.toggle("visible", debugOpen);
+  document.getElementById("debugIcon").classList.toggle("open", debugOpen);
+}
+
+function renderDebug() {
+  const panel = document.getElementById("debugPanel");
+  if (debugRows.length === 0) {
+    panel.innerHTML = `<div style="font-size:11px;color:var(--text-dim);font-family:var(--mono);padding:6px 2px;">Noch kein Scan.</div>`;
+    return;
+  }
+  let html = `
+    <div class="debug-header">
+      <span>Ticker</span><span>RSI</span><span>Kurs</span><span>SMA20</span><span>Status</span>
+    </div>`;
+  for (const d of debugRows) {
+    html += `
+    <div class="debug-row ${d.rowClass}">
+      <span class="d-ticker">${d.ticker.replace(".DE","")}</span>
+      <span class="d-rsi ${d.rsi !== null && d.rsi < 35 ? "low" : ""}">${d.rsi !== null ? d.rsi : "–"}</span>
+      <span class="d-val">${d.price !== null ? d.price.toFixed(2) : "–"}</span>
+      <span class="d-val">${d.sma20 !== null ? d.sma20.toFixed(2) : "–"}</span>
+      <span class="d-status ${d.rowClass}">${d.status}</span>
+    </div>`;
+  }
+  panel.innerHTML = html;
 }
 </script>
 </body>
