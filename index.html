@@ -19,9 +19,9 @@
     --text-dim: #3a3a52;
     --accent: #4f8fff;
     --buy: #00c896;
-    --buy-bg: rgba(0, 200, 150, 0.1);
+    --buy-bg: rgba(0,200,150,0.10);
     --watch: #f0b429;
-    --watch-bg: rgba(240, 180, 41, 0.1);
+    --watch-bg: rgba(240,180,41,0.10);
     --red: #ff4f6a;
     --mono: 'DM Mono', monospace;
     --sans: 'DM Sans', sans-serif;
@@ -34,353 +34,221 @@
     color: var(--text);
     font-family: var(--sans);
     min-height: 100vh;
-    min-height: -webkit-fill-available;
-    padding-bottom: env(safe-area-inset-bottom);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 20px);
   }
 
+  /* ── Header ── */
   .header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(10, 10, 15, 0.88);
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,15,0.90);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
-    padding: 16px 20px 14px;
-    padding-top: calc(env(safe-area-inset-top) + 16px);
+    padding: 14px 18px 12px;
+    padding-top: calc(env(safe-area-inset-top) + 14px);
   }
 
-  .header-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
 
   .logo { display: flex; align-items: center; gap: 8px; }
-
-  .logo-name {
-    font-family: var(--mono);
-    font-size: 18px;
-    font-weight: 500;
-    letter-spacing: -0.5px;
-    color: var(--text);
-  }
-
+  .logo-name { font-family: var(--mono); font-size: 17px; font-weight: 500; letter-spacing: -0.4px; }
   .logo-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--accent);
+    width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
     animation: pulse 2s ease-in-out infinite;
-    flex-shrink: 0;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.7)} }
+
+  .header-meta {
+    margin-top: 8px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .meta-label { font-size: 11px; color: var(--text-muted); font-family: var(--mono); }
+  .meta-count {
+    font-size: 11px; color: var(--accent); font-family: var(--mono);
+    background: rgba(79,143,255,0.12); padding: 2px 8px; border-radius: 10px;
   }
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.3; transform: scale(0.7); }
+  /* ── Scan Buttons ── */
+  .scan-bar {
+    padding: 12px 18px 0;
+    display: flex; gap: 8px;
   }
 
-  .refresh-btn {
+  .scan-btn {
+    flex: 1;
     background: var(--surface2);
     border: 1px solid var(--border);
     color: var(--text);
     font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 500;
-    padding: 8px 16px;
-    border-radius: 20px;
+    font-size: 13px; font-weight: 500;
+    padding: 10px 8px;
+    border-radius: 12px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
     transition: all 0.15s;
     -webkit-user-select: none;
   }
+  .scan-btn:active { transform: scale(0.96); }
+  .scan-btn:disabled { opacity: 0.45; }
+  .scan-btn.dax-btn { border-color: rgba(79,143,255,0.3); }
+  .scan-btn.us-btn  { border-color: rgba(0,200,150,0.3); color: var(--buy); }
 
-  .refresh-btn:active { transform: scale(0.95); }
-  .refresh-btn:disabled { opacity: 0.5; }
-
-  .refresh-icon { font-size: 15px; display: inline-block; }
-  .refresh-btn.loading .refresh-icon { animation: spin 0.7s linear infinite; }
-
+  .spin-icon { display: inline-block; font-size: 14px; }
+  .loading .spin-icon { animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .header-meta {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .meta-label {
-    font-size: 11px;
-    color: var(--text-muted);
-    font-family: var(--mono);
-  }
-
-  .meta-count {
-    font-size: 11px;
-    color: var(--accent);
-    font-family: var(--mono);
-    background: rgba(79, 143, 255, 0.12);
-    padding: 2px 8px;
-    border-radius: 10px;
-  }
-
+  /* ── Filter tabs ── */
   .filter-bar {
-    padding: 12px 20px 0;
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    padding: 10px 18px 0;
+    display: flex; gap: 8px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
   }
   .filter-bar::-webkit-scrollbar { display: none; }
 
   .filter-tab {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    font-family: var(--sans);
-    font-size: 12px;
-    font-weight: 500;
-    padding: 6px 14px;
-    border-radius: 14px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text-muted); font-family: var(--sans);
+    font-size: 12px; font-weight: 500;
+    padding: 6px 14px; border-radius: 14px;
+    cursor: pointer; white-space: nowrap; transition: all 0.2s;
     -webkit-user-select: none;
   }
+  .filter-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-  .filter-tab.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
-
-  .content { padding: 16px 20px; }
+  /* ── Content ── */
+  .content { padding: 14px 18px; }
 
   .section-label {
-    font-size: 10px;
-    font-family: var(--mono);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 10px;
-    padding: 0 2px;
+    font-size: 10px; font-family: var(--mono);
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 10px; padding: 0 2px;
   }
 
   .card-list { display: flex; flex-direction: column; gap: 8px; }
 
   .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 14px 16px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 8px 12px;
-    align-items: start;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 13px 15px;
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 8px 12px; align-items: start;
     animation: fadeUp 0.3s ease both;
   }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .card:nth-child(1) { animation-delay: 0.00s; }
-  .card:nth-child(2) { animation-delay: 0.05s; }
-  .card:nth-child(3) { animation-delay: 0.10s; }
-  .card:nth-child(4) { animation-delay: 0.15s; }
-  .card:nth-child(5) { animation-delay: 0.20s; }
-  .card:nth-child(6) { animation-delay: 0.25s; }
-  .card:nth-child(7) { animation-delay: 0.30s; }
-  .card:nth-child(8) { animation-delay: 0.35s; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .card:nth-child(1){animation-delay:0.00s}
+  .card:nth-child(2){animation-delay:0.05s}
+  .card:nth-child(3){animation-delay:0.10s}
+  .card:nth-child(4){animation-delay:0.15s}
+  .card:nth-child(5){animation-delay:0.20s}
+  .card:nth-child(6){animation-delay:0.25s}
+  .card:nth-child(7){animation-delay:0.30s}
+  .card:nth-child(8){animation-delay:0.35s}
 
   .card.buy-zone {
-    border-color: rgba(0, 200, 150, 0.22);
+    border-color: rgba(0,200,150,0.22);
     background: linear-gradient(135deg, var(--surface) 60%, rgba(0,200,150,0.06) 100%);
   }
 
   .card-left { min-width: 0; }
+  .card-ticker { font-family: var(--mono); font-size: 15px; font-weight: 500; letter-spacing: -0.3px; }
+  .card-name { font-size: 12px; color: var(--text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 185px; }
 
-  .card-ticker {
-    font-family: var(--mono);
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--text);
-    letter-spacing: -0.3px;
-  }
-
-  .card-name {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 190px;
-  }
-
-  .card-stats {
-    display: flex;
-    gap: 14px;
-    margin-top: 10px;
-    align-items: center;
-  }
-
+  .card-stats { display: flex; gap: 14px; margin-top: 10px; align-items: center; }
   .stat { display: flex; flex-direction: column; gap: 2px; }
-
-  .stat-label {
-    font-size: 9px;
-    font-family: var(--mono);
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-  }
-
-  .stat-value {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--text);
-    font-weight: 500;
-  }
-
+  .stat-label { font-size: 9px; font-family: var(--mono); letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-dim); }
+  .stat-value { font-family: var(--mono); font-size: 13px; color: var(--text); font-weight: 500; }
   .rsi-hot { color: var(--buy); }
   .rsi-warm { color: var(--watch); }
+  .stat-divider { width: 1px; height: 28px; background: var(--border); }
 
-  .stat-divider {
-    width: 1px;
-    height: 28px;
-    background: var(--border);
-  }
-
-  .card-right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-  }
-
-  .price {
-    font-family: var(--mono);
-    font-size: 17px;
-    font-weight: 500;
-    color: var(--text);
-    letter-spacing: -0.5px;
-  }
+  .card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .price { font-family: var(--mono); font-size: 16px; font-weight: 500; letter-spacing: -0.5px; }
 
   .signal-badge {
-    font-size: 10px;
-    font-family: var(--mono);
-    font-weight: 500;
-    letter-spacing: 0.3px;
-    padding: 5px 10px;
-    border-radius: 8px;
-    white-space: nowrap;
+    font-size: 10px; font-family: var(--mono); font-weight: 500;
+    letter-spacing: 0.3px; padding: 5px 10px; border-radius: 8px; white-space: nowrap;
   }
-
-  .signal-buy {
-    background: var(--buy-bg);
-    color: var(--buy);
-    border: 1px solid rgba(0, 200, 150, 0.28);
-  }
-
-  .signal-watch {
-    background: var(--watch-bg);
-    color: var(--watch);
-    border: 1px solid rgba(240, 180, 41, 0.28);
-  }
+  .signal-buy  { background: var(--buy-bg);   color: var(--buy);   border: 1px solid rgba(0,200,150,0.28); }
+  .signal-watch{ background: var(--watch-bg); color: var(--watch); border: 1px solid rgba(240,180,41,0.28); }
 
   .target-line {
-    grid-column: 1 / -1;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding-top: 8px;
-    border-top: 1px solid var(--border);
-    margin-top: 2px;
+    grid-column: 1/-1; display: flex; align-items: center; gap: 8px;
+    padding-top: 8px; border-top: 1px solid var(--border); margin-top: 2px;
   }
+  .target-label { font-size: 10px; font-family: var(--mono); color: var(--text-dim); }
+  .target-price { font-size: 12px; font-family: var(--mono); color: var(--accent); font-weight: 500; }
+  .target-pct   { font-size: 10px; font-family: var(--mono); color: var(--text-dim); margin-left: auto; }
 
-  .target-label {
-    font-size: 10px;
-    font-family: var(--mono);
-    color: var(--text-dim);
-    letter-spacing: 0.5px;
-  }
-
-  .target-price {
-    font-size: 12px;
-    font-family: var(--mono);
-    color: var(--accent);
-    font-weight: 500;
-  }
-
-  .target-pct {
-    font-size: 10px;
-    font-family: var(--mono);
-    color: var(--text-dim);
-    margin-left: auto;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-  }
-
-  .empty-icon { font-size: 36px; margin-bottom: 12px; }
-
-  .empty-title {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-  }
-
-  .empty-sub {
-    font-size: 13px;
-    color: var(--text-dim);
-    line-height: 1.6;
-  }
-
-  .error-box {
-    background: rgba(255,79,106,0.07);
-    border: 1px solid rgba(255,79,106,0.2);
-    border-radius: 12px;
-    padding: 14px 16px;
-    font-size: 13px;
-    color: var(--red);
-    line-height: 1.5;
-    font-family: var(--mono);
-  }
+  .empty-state { text-align: center; padding: 50px 20px; }
+  .empty-icon  { font-size: 34px; margin-bottom: 12px; }
+  .empty-title { font-size: 15px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
+  .empty-sub   { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
 
   .skeleton-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    height: 108px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; height: 108px;
     animation: shimmer 1.4s ease-in-out infinite;
   }
-
-  @keyframes shimmer {
-    0%,100% { opacity: 0.35; }
-    50%      { opacity: 0.75; }
-  }
+  @keyframes shimmer { 0%,100%{opacity:0.35} 50%{opacity:0.75} }
 
   .api-banner {
-    background: rgba(79,143,255,0.07);
-    border: 1px solid rgba(79,143,255,0.2);
-    border-radius: 12px;
-    padding: 12px 14px;
-    font-size: 12px;
-    color: var(--accent);
-    font-family: var(--mono);
-    line-height: 1.7;
-    margin-bottom: 16px;
+    background: rgba(79,143,255,0.07); border: 1px solid rgba(79,143,255,0.2);
+    border-radius: 12px; padding: 12px 14px;
+    font-size: 12px; color: var(--accent); font-family: var(--mono);
+    line-height: 1.7; margin-bottom: 14px;
   }
 
-  .spacer-section { height: 20px; }
+  .spacer { height: 20px; }
+
+  /* ── Debug Panel ── */
+  .debug-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 24px; margin-bottom: 8px;
+    cursor: pointer; -webkit-user-select: none;
+  }
+  .debug-toggle-label {
+    font-size: 10px; font-family: var(--mono); letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--text-dim);
+  }
+  .debug-toggle-icon { font-size: 12px; color: var(--text-dim); transition: transform 0.2s; }
+  .debug-toggle-icon.open { transform: rotate(180deg); }
+
+  .debug-panel { display: none; }
+  .debug-panel.visible { display: block; }
+
+  .debug-row {
+    display: grid;
+    grid-template-columns: 70px 50px 55px 55px 1fr;
+    gap: 4px;
+    font-size: 11px; font-family: var(--mono);
+    padding: 7px 10px;
+    border-radius: 8px;
+    margin-bottom: 3px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    align-items: center;
+  }
+  .debug-row.ok   { border-color: rgba(0,200,150,0.2); }
+  .debug-row.skip { border-color: rgba(240,180,41,0.15); opacity: 0.65; }
+  .debug-row.err  { border-color: rgba(255,79,106,0.2); opacity: 0.65; }
+
+  .debug-ticker { color: var(--text); font-weight: 500; }
+  .debug-rsi    { color: var(--watch); }
+  .debug-rsi.good { color: var(--buy); }
+  .debug-price  { color: var(--text-muted); }
+  .debug-sma    { color: var(--text-muted); }
+  .debug-status { color: var(--text-dim); font-size: 10px; }
+  .debug-status.ok    { color: var(--buy); }
+  .debug-status.skip  { color: var(--watch); }
+  .debug-status.err   { color: var(--red); }
+
+  .debug-header {
+    display: grid;
+    grid-template-columns: 70px 50px 55px 55px 1fr;
+    gap: 4px;
+    font-size: 9px; font-family: var(--mono); letter-spacing: 0.8px;
+    text-transform: uppercase; color: var(--text-dim);
+    padding: 0 10px 6px;
+  }
 </style>
 </head>
 <body>
@@ -391,52 +259,67 @@
       <span class="logo-name">SwingRadar</span>
       <div class="logo-dot"></div>
     </div>
-    <button class="refresh-btn" id="refreshBtn" onclick="scanStocks()">
-      <span class="refresh-icon">↻</span>
-      <span>Refresh</span>
-    </button>
   </div>
   <div class="header-meta">
     <span class="meta-label" id="timestamp">–</span>
-    <span class="meta-count" id="resultCount">lädt …</span>
+    <span class="meta-count" id="resultCount">–</span>
   </div>
 </div>
 
-<div class="filter-bar" id="filterBar">
-  <button class="filter-tab active" onclick="setFilter('all', this)">Alle</button>
-  <button class="filter-tab" onclick="setFilter('buy', this)">🟢 Buy Zone</button>
-  <button class="filter-tab" onclick="setFilter('watch', this)">🟡 Watch</button>
-  <button class="filter-tab" onclick="setFilter('dax', this)">DAX / DE</button>
-  <button class="filter-tab" onclick="setFilter('us', this)">US</button>
+<div class="scan-bar">
+  <button class="scan-btn dax-btn" id="btnDAX" onclick="scanGroup('dax')">
+    <span class="spin-icon">🇩🇪</span> DAX / DE scannen
+  </button>
+  <button class="scan-btn us-btn" id="btnUS" onclick="scanGroup('us')">
+    <span class="spin-icon">🇺🇸</span> US scannen
+  </button>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-tab active" onclick="setFilter('all',this)">Alle</button>
+  <button class="filter-tab" onclick="setFilter('buy',this)">🟢 Buy Zone</button>
+  <button class="filter-tab" onclick="setFilter('watch',this)">🟡 Watch</button>
+  <button class="filter-tab" onclick="setFilter('dax',this)">DAX / DE</button>
+  <button class="filter-tab" onclick="setFilter('us',this)">US</button>
 </div>
 
 <div class="content">
   <div id="apiBanner" class="api-banner" style="display:none;">
-    ⚠️ Kein API-Key — trage deinen FMP-Key in die Variable <strong>API_KEY</strong> im &lt;script&gt; ein.
+    ⚠️ Kein API-Key — trage deinen FMP-Key in die Variable <strong>API_KEY</strong> ein.
   </div>
+
   <div id="output">
-    <div class="section-label">Scanne Markt …</div>
-    <div class="card-list">
-      <div class="skeleton-card"></div>
-      <div class="skeleton-card"></div>
-      <div class="skeleton-card"></div>
-      <div class="skeleton-card"></div>
+    <div class="empty-state">
+      <div class="empty-icon">📡</div>
+      <div class="empty-title">Bereit</div>
+      <div class="empty-sub">DAX/DE oder US scannen — oder beide.</div>
     </div>
   </div>
+
+  <!-- Debug Panel -->
+  <div class="debug-toggle" onclick="toggleDebug()">
+    <span class="debug-toggle-label">Debug · API-Rohdaten</span>
+    <span class="debug-toggle-icon" id="debugIcon">▼</span>
+  </div>
+  <div class="debug-panel" id="debugPanel">
+    <div style="font-size:11px;color:var(--text-dim);font-family:var(--mono);padding:8px 2px;">
+      Noch kein Scan gestartet.
+    </div>
+  </div>
+
 </div>
 
 <script>
 // ──────────────────────────────────────────────────────
 //  👇  HIER DEINEN FMP API-KEY EINTRAGEN
-const API_KEY = "TW9XCUkDJ4qQOgrfOnW1Iebkd8eyiz7G";
+const API_KEY = "DEIN_API_KEY_HIER";
 // ──────────────────────────────────────────────────────
 
 const BASE = "https://financialmodelingprep.com/api/v3";
-const SELL_TARGET_PCT = 5; // Sell-Ziel in %
+const SELL_TARGET_PCT = 5;
 
-// Watchlist ─ ca. 25 liquide Werte für L&S / Trade Republic
 const WATCHLIST = [
-  // ── DAX / MDAX ──────────────────────────────────
+  // ── DAX / MDAX ── (FMP-Ticker ohne .DE — falls kein Ergebnis, .DE-Suffix probieren)
   { ticker: "SAP",   name: "SAP SE",             group: "dax", cur: "€" },
   { ticker: "SIE",   name: "Siemens AG",          group: "dax", cur: "€" },
   { ticker: "ALV",   name: "Allianz SE",           group: "dax", cur: "€" },
@@ -452,7 +335,7 @@ const WATCHLIST = [
   { ticker: "DHL",   name: "DHL Group",            group: "dax", cur: "€" },
   { ticker: "MTX",   name: "MTU Aero Engines",     group: "dax", cur: "€" },
   { ticker: "HEI",   name: "Heidelberg Materials", group: "dax", cur: "€" },
-  // ── US Dividenden-Stars & Blue Chips ────────────
+  // ── US ──────────────────────────────────────────
   { ticker: "O",     name: "Realty Income",        group: "us",  cur: "$" },
   { ticker: "MAIN",  name: "Main Street Capital",  group: "us",  cur: "$" },
   { ticker: "ARCC",  name: "Ares Capital",         group: "us",  cur: "$" },
@@ -461,13 +344,16 @@ const WATCHLIST = [
   { ticker: "NVDA",  name: "NVIDIA",               group: "us",  cur: "$" },
   { ticker: "DIS",   name: "Walt Disney",          group: "us",  cur: "$" },
   { ticker: "NTDOY", name: "Nintendo ADR",         group: "us",  cur: "$" },
-  { ticker: "VLNA",  name: "Valneva SE ADR",       group: "us",  cur: "$" },
   { ticker: "PLUG",  name: "Plug Power",           group: "us",  cur: "$" },
+  { ticker: "VLNA",  name: "Valneva ADR",          group: "us",  cur: "$" },
 ];
 
-let allResults  = [];
+let allResults   = [];
+let debugRows    = [];
 let activeFilter = "all";
+let debugOpen    = false;
 
+// ── Filter ──────────────────────────────────────────
 function setFilter(f, el) {
   activeFilter = f;
   document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
@@ -486,102 +372,149 @@ function applyFilter(results) {
   });
 }
 
+// ── Debug Panel ─────────────────────────────────────
+function toggleDebug() {
+  debugOpen = !debugOpen;
+  document.getElementById("debugPanel").classList.toggle("visible", debugOpen);
+  document.getElementById("debugIcon").classList.toggle("open", debugOpen);
+}
+
+function renderDebug() {
+  const panel = document.getElementById("debugPanel");
+  if (debugRows.length === 0) {
+    panel.innerHTML = `<div style="font-size:11px;color:var(--text-dim);font-family:var(--mono);padding:8px 2px;">Noch kein Scan.</div>`;
+    return;
+  }
+  let html = `
+    <div class="debug-header">
+      <span>Ticker</span><span>RSI</span><span>Kurs</span><span>SMA20</span><span>Status</span>
+    </div>`;
+  for (const d of debugRows) {
+    const rsiClass = d.rsi !== null && d.rsi < 35 ? "good" : "";
+    html += `
+    <div class="debug-row ${d.rowClass}">
+      <span class="debug-ticker">${d.ticker}</span>
+      <span class="debug-rsi ${rsiClass}">${d.rsi !== null ? d.rsi.toFixed(1) : "–"}</span>
+      <span class="debug-price">${d.price !== null ? d.price.toFixed(2) : "–"}</span>
+      <span class="debug-sma">${d.sma20 !== null ? d.sma20.toFixed(2) : "–"}</span>
+      <span class="debug-status ${d.rowClass}">${d.status}</span>
+    </div>`;
+  }
+  panel.innerHTML = html;
+}
+
+// ── API Calls ────────────────────────────────────────
 async function apiFetch(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
 
-async function fetchData(ticker) {
+async function fetchStockData(ticker) {
   const [quoteData, rsiData, smaData] = await Promise.all([
     apiFetch(`${BASE}/quote/${ticker}?apikey=${API_KEY}`),
     apiFetch(`${BASE}/technical_indicator/daily/${ticker}?period=14&type=rsi&apikey=${API_KEY}`),
     apiFetch(`${BASE}/technical_indicator/daily/${ticker}?period=20&type=sma&apikey=${API_KEY}`)
   ]);
-
   const quote = Array.isArray(quoteData) && quoteData[0] ? quoteData[0] : null;
   const rsi   = Array.isArray(rsiData)   && rsiData[0]   ? rsiData[0].rsi   : null;
   const sma20 = Array.isArray(smaData)   && smaData[0]   ? smaData[0].sma   : null;
-
   return { quote, rsi, sma20 };
 }
 
-async function scanStocks() {
+// ── Scan ─────────────────────────────────────────────
+async function scanGroup(group) {
   if (!API_KEY || API_KEY === "DEIN_API_KEY_HIER") {
     document.getElementById("apiBanner").style.display = "block";
-    document.getElementById("output").innerHTML =
-      `<div class="error-box">Kein API-Key konfiguriert.<br>Öffne die HTML-Datei und trage deinen FMP-Key in die Variable <strong>API_KEY</strong> ein.</div>`;
-    document.getElementById("resultCount").textContent = "–";
     return;
   }
-
   document.getElementById("apiBanner").style.display = "none";
 
-  const btn = document.getElementById("refreshBtn");
+  const btnId = group === "dax" ? "btnDAX" : "btnUS";
+  const btn   = document.getElementById(btnId);
   btn.classList.add("loading");
   btn.disabled = true;
-  document.getElementById("resultCount").textContent = "scannt …";
 
+  const list = WATCHLIST.filter(s => s.group === group);
+
+  // Skeleton
   document.getElementById("output").innerHTML = `
-    <div class="section-label">Scanne ${WATCHLIST.length} Werte …</div>
-    <div class="card-list">
-      ${[1,2,3,4].map(() => '<div class="skeleton-card"></div>').join("")}
-    </div>`;
+    <div class="section-label">Scanne ${list.length} ${group.toUpperCase()}-Werte …</div>
+    <div class="card-list">${[1,2,3].map(()=>'<div class="skeleton-card"></div>').join("")}</div>`;
 
-  const results = [];
+  // Remove previous results for this group
+  allResults = allResults.filter(r => r.group !== group);
+  debugRows  = debugRows.filter(d => !list.find(s => s.ticker === d.ticker));
 
-  for (const stock of WATCHLIST) {
+  for (const stock of list) {
+    let debugEntry = { ticker: stock.ticker, rsi: null, price: null, sma20: null, status: "–", rowClass: "skip" };
     try {
-      const { quote, rsi, sma20 } = await fetchData(stock.ticker);
-      if (!quote || rsi === null) continue;
+      const { quote, rsi, sma20 } = await fetchStockData(stock.ticker);
 
-      const price    = quote.price;
-      const aboveSMA = sma20 !== null ? price > sma20 : false;
+      debugEntry.price = quote ? quote.price : null;
+      debugEntry.rsi   = rsi;
+      debugEntry.sma20 = sma20;
 
-      // Kriterien: RSI < 45 UND Kurs über SMA20
-      if (rsi < 45 && aboveSMA) {
-        results.push({
+      if (!quote)       { debugEntry.status = "kein Kurs";   debugEntry.rowClass = "err";  }
+      else if (!rsi)    { debugEntry.status = "kein RSI";    debugEntry.rowClass = "err";  }
+      else if (rsi >= 45){ debugEntry.status = `RSI ${rsi.toFixed(1)} ≥ 45`; debugEntry.rowClass = "skip"; }
+      else if (sma20 && quote.price <= sma20) {
+        debugEntry.status = `Kurs < SMA20`; debugEntry.rowClass = "skip";
+      } else {
+        // Passt → aufnehmen (SMA20 fehlt → trotzdem anzeigen mit Hinweis)
+        const noSMA = sma20 === null;
+        debugEntry.status = noSMA ? "✓ (kein SMA)" : "✓ Signal";
+        debugEntry.rowClass = "ok";
+
+        allResults.push({
           ticker: stock.ticker,
           name:   stock.name,
           group:  stock.group,
           cur:    stock.cur,
-          price,
+          price:  quote.price,
           rsi:    parseFloat(rsi.toFixed(1)),
           sma20,
           signal: rsi < 35 ? "buy" : "watch",
-          target: parseFloat((price * (1 + SELL_TARGET_PCT / 100)).toFixed(2))
+          target: parseFloat((quote.price * (1 + SELL_TARGET_PCT / 100)).toFixed(2))
         });
       }
-    } catch (err) {
-      console.warn(`[${stock.ticker}]`, err.message);
+    } catch (e) {
+      debugEntry.status   = e.message;
+      debugEntry.rowClass = "err";
     }
+    debugRows.push(debugEntry);
+    renderDebug(); // live update
   }
 
-  // Sortierung: buy zuerst, dann RSI aufsteigend
-  results.sort((a, b) => {
+  // Sortieren
+  allResults.sort((a,b) => {
     if (a.signal !== b.signal) return a.signal === "buy" ? -1 : 1;
     return a.rsi - b.rsi;
   });
 
-  allResults = results;
-
   const now = new Date();
   document.getElementById("timestamp").textContent =
-    "Stand " + now.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+    `${group.toUpperCase()} · ${now.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}`;
 
   btn.classList.remove("loading");
   btn.disabled = false;
 
-  renderCards(results);
+  renderCards(allResults);
+
+  // Debug automatisch öffnen wenn keine Treffer
+  if (allResults.filter(r => r.group === group).length === 0 && !debugOpen) {
+    toggleDebug();
+  }
 }
 
+// ── Render Cards ─────────────────────────────────────
 function renderCards(results) {
   const filtered  = applyFilter(results);
   const buyZone   = filtered.filter(r => r.signal === "buy");
   const watchZone = filtered.filter(r => r.signal === "watch");
 
   document.getElementById("resultCount").textContent =
-    filtered.length === 0 ? "Kein Treffer" : `${filtered.length} Treffer`;
+    filtered.length === 0 ? "Kein Treffer" : `${filtered.length} Signal${filtered.length > 1 ? "e" : ""}`;
 
   const out = document.getElementById("output");
 
@@ -590,30 +523,27 @@ function renderCards(results) {
       <div class="empty-state">
         <div class="empty-icon">📡</div>
         <div class="empty-title">Keine Signale</div>
-        <div class="empty-sub">Aktuell erfüllt kein Wert die Kriterien<br>RSI &lt; 45 + Kurs über 20-Tage-Schnitt.</div>
+        <div class="empty-sub">RSI &lt; 45 + Kurs über SMA20<br>aktuell kein Treffer.<br><br>
+          <span style="color:var(--accent)">→ Debug-Panel öffnen für Details</span>
+        </div>
       </div>`;
     return;
   }
 
   let html = "";
-
   if (buyZone.length > 0) {
     html += `<div class="section-label">BUY-IN ZONE · ${buyZone.length}</div>
              <div class="card-list">${buyZone.map(buildCard).join("")}</div>`;
   }
-
   if (watchZone.length > 0) {
-    if (buyZone.length > 0) html += `<div class="spacer-section"></div>`;
+    if (buyZone.length > 0) html += `<div class="spacer"></div>`;
     html += `<div class="section-label">WATCH · ${watchZone.length}</div>
              <div class="card-list">${watchZone.map(buildCard).join("")}</div>`;
   }
-
   out.innerHTML = html;
 }
 
-function fmt(price) {
-  return price < 10 ? price.toFixed(3) : price.toFixed(2);
-}
+function fmt(p) { return p < 10 ? p.toFixed(3) : p.toFixed(2); }
 
 function buildCard(r) {
   const isBuy = r.signal === "buy";
@@ -630,7 +560,7 @@ function buildCard(r) {
         <div class="stat-divider"></div>
         <div class="stat">
           <span class="stat-label">SMA 20</span>
-          <span class="stat-value">${r.cur}${r.sma20 ? fmt(r.sma20) : "–"}</span>
+          <span class="stat-value">${r.sma20 ? r.cur + fmt(r.sma20) : "–"}</span>
         </div>
       </div>
     </div>
@@ -647,9 +577,6 @@ function buildCard(r) {
     </div>
   </div>`;
 }
-
-// Direkt beim Laden starten
-window.addEventListener("DOMContentLoaded", scanStocks);
 </script>
 </body>
 </html>
