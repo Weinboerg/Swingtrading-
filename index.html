@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>SwingRadar</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c26;
+    --border: #2a2a3a;
+    --text: #e8e8f0;
+    --text-muted: #6b6b85;
+    --text-dim: #3a3a52;
+    --accent: #4f8fff;
+    --buy: #00c896;
+    --buy-bg: rgba(0, 200, 150, 0.1);
+    --watch: #f0b429;
+    --watch-bg: rgba(240, 180, 41, 0.1);
+    --red: #ff4f6a;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10, 10, 15, 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px 14px;
+    padding-top: calc(env(safe-area-inset-top) + 16px);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo { display: flex; align-items: center; gap: 8px; }
+
+  .logo-name {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .logo-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.7); }
+  }
+
+  .refresh-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+    -webkit-user-select: none;
+  }
+
+  .refresh-btn:active { transform: scale(0.95); }
+  .refresh-btn:disabled { opacity: 0.5; }
+
+  .refresh-icon { font-size: 15px; display: inline-block; }
+  .refresh-btn.loading .refresh-icon { animation: spin 0.7s linear infinite; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .header-meta {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .meta-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+  }
+
+  .meta-count {
+    font-size: 11px;
+    color: var(--accent);
+    font-family: var(--mono);
+    background: rgba(79, 143, 255, 0.12);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  .filter-bar {
+    padding: 12px 20px 0;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .filter-bar::-webkit-scrollbar { display: none; }
+
+  .filter-tab {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    -webkit-user-select: none;
+  }
+
+  .filter-tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .content { padding: 16px 20px; }
+
+  .section-label {
+    font-size: 10px;
+    font-family: var(--mono);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    padding: 0 2px;
+  }
+
+  .card-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 12px;
+    align-items: start;
+    animation: fadeUp 0.3s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card:nth-child(1) { animation-delay: 0.00s; }
+  .card:nth-child(2) { animation-delay: 0.05s; }
+  .card:nth-child(3) { animation-delay: 0.10s; }
+  .card:nth-child(4) { animation-delay: 0.15s; }
+  .card:nth-child(5) { animation-delay: 0.20s; }
+  .card:nth-child(6) { animation-delay: 0.25s; }
+  .card:nth-child(7) { animation-delay: 0.30s; }
+  .card:nth-child(8) { animation-delay: 0.35s; }
+
+  .card.buy-zone {
+    border-color: rgba(0, 200, 150, 0.22);
+    background: linear-gradient(135deg, var(--surface) 60%, rgba(0,200,150,0.06) 100%);
+  }
+
+  .card-left { min-width: 0; }
+
+  .card-ticker {
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .card-name {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 190px;
+  }
+
+  .card-stats {
+    display: flex;
+    gap: 14px;
+    margin-top: 10px;
+    align-items: center;
+  }
+
+  .stat { display: flex; flex-direction: column; gap: 2px; }
+
+  .stat-label {
+    font-size: 9px;
+    font-family: var(--mono);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .rsi-hot { color: var(--buy); }
+  .rsi-warm { color: var(--watch); }
+
+  .stat-divider {
+    width: 1px;
+    height: 28px;
+    background: var(--border);
+  }
+
+  .card-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .price {
+    font-family: var(--mono);
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+
+  .signal-badge {
+    font-size: 10px;
+    font-family: var(--mono);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .signal-buy {
+    background: var(--buy-bg);
+    color: var(--buy);
+    border: 1px solid rgba(0, 200, 150, 0.28);
+  }
+
+  .signal-watch {
+    background: var(--watch-bg);
+    color: var(--watch);
+    border: 1px solid rgba(240, 180, 41, 0.28);
+  }
+
+  .target-line {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    margin-top: 2px;
+  }
+
+  .target-label {
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+  }
+
+  .target-price {
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .target-pct {
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text-dim);
+    margin-left: auto;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .empty-icon { font-size: 36px; margin-bottom: 12px; }
+
+  .empty-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .empty-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .error-box {
+    background: rgba(255,79,106,0.07);
+    border: 1px solid rgba(255,79,106,0.2);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--red);
+    line-height: 1.5;
+    font-family: var(--mono);
+  }
+
+  .skeleton-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    height: 108px;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0%,100% { opacity: 0.35; }
+    50%      { opacity: 0.75; }
+  }
+
+  .api-banner {
+    background: rgba(79,143,255,0.07);
+    border: 1px solid rgba(79,143,255,0.2);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 12px;
+    color: var(--accent);
+    font-family: var(--mono);
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  .spacer-section { height: 20px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">
+      <span class="logo-name">SwingRadar</span>
+      <div class="logo-dot"></div>
+    </div>
+    <button class="refresh-btn" id="refreshBtn" onclick="scanStocks()">
+      <span class="refresh-icon">↻</span>
+      <span>Refresh</span>
+    </button>
+  </div>
+  <div class="header-meta">
+    <span class="meta-label" id="timestamp">–</span>
+    <span class="meta-count" id="resultCount">lädt …</span>
+  </div>
+</div>
+
+<div class="filter-bar" id="filterBar">
+  <button class="filter-tab active" onclick="setFilter('all', this)">Alle</button>
+  <button class="filter-tab" onclick="setFilter('buy', this)">🟢 Buy Zone</button>
+  <button class="filter-tab" onclick="setFilter('watch', this)">🟡 Watch</button>
+  <button class="filter-tab" onclick="setFilter('dax', this)">DAX / DE</button>
+  <button class="filter-tab" onclick="setFilter('us', this)">US</button>
+</div>
+
+<div class="content">
+  <div id="apiBanner" class="api-banner" style="display:none;">
+    ⚠️ Kein API-Key — trage deinen FMP-Key in die Variable <strong>API_KEY</strong> im &lt;script&gt; ein.
+  </div>
+  <div id="output">
+    <div class="section-label">Scanne Markt …</div>
+    <div class="card-list">
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ──────────────────────────────────────────────────────
+//  👇  HIER DEINEN FMP API-KEY EINTRAGEN
+const API_KEY = "DEIN_API_KEY_HIER";
+// ──────────────────────────────────────────────────────
+
+const BASE = "https://financialmodelingprep.com/api/v3";
+const SELL_TARGET_PCT = 5; // Sell-Ziel in %
+
+// Watchlist ─ ca. 25 liquide Werte für L&S / Trade Republic
+const WATCHLIST = [
+  // ── DAX / MDAX ──────────────────────────────────
+  { ticker: "SAP",   name: "SAP SE",             group: "dax", cur: "€" },
+  { ticker: "SIE",   name: "Siemens AG",          group: "dax", cur: "€" },
+  { ticker: "ALV",   name: "Allianz SE",           group: "dax", cur: "€" },
+  { ticker: "DTE",   name: "Deutsche Telekom",     group: "dax", cur: "€" },
+  { ticker: "MUV2",  name: "Munich Re",            group: "dax", cur: "€" },
+  { ticker: "BAS",   name: "BASF SE",              group: "dax", cur: "€" },
+  { ticker: "BMW",   name: "BMW AG",               group: "dax", cur: "€" },
+  { ticker: "MBG",   name: "Mercedes-Benz",        group: "dax", cur: "€" },
+  { ticker: "RWE",   name: "RWE AG",               group: "dax", cur: "€" },
+  { ticker: "BAYN",  name: "Bayer AG",             group: "dax", cur: "€" },
+  { ticker: "DBK",   name: "Deutsche Bank",        group: "dax", cur: "€" },
+  { ticker: "IFX",   name: "Infineon",             group: "dax", cur: "€" },
+  { ticker: "DHL",   name: "DHL Group",            group: "dax", cur: "€" },
+  { ticker: "MTX",   name: "MTU Aero Engines",     group: "dax", cur: "€" },
+  { ticker: "HEI",   name: "Heidelberg Materials", group: "dax", cur: "€" },
+  // ── US Dividenden-Stars & Blue Chips ────────────
+  { ticker: "O",     name: "Realty Income",        group: "us",  cur: "$" },
+  { ticker: "MAIN",  name: "Main Street Capital",  group: "us",  cur: "$" },
+  { ticker: "ARCC",  name: "Ares Capital",         group: "us",  cur: "$" },
+  { ticker: "MSFT",  name: "Microsoft",            group: "us",  cur: "$" },
+  { ticker: "AAPL",  name: "Apple",                group: "us",  cur: "$" },
+  { ticker: "NVDA",  name: "NVIDIA",               group: "us",  cur: "$" },
+  { ticker: "DIS",   name: "Walt Disney",          group: "us",  cur: "$" },
+  { ticker: "NTDOY", name: "Nintendo ADR",         group: "us",  cur: "$" },
+  { ticker: "VLNA",  name: "Valneva SE ADR",       group: "us",  cur: "$" },
+  { ticker: "PLUG",  name: "Plug Power",           group: "us",  cur: "$" },
+];
+
+let allResults  = [];
+let activeFilter = "all";
+
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+  el.classList.add("active");
+  renderCards(allResults);
+}
+
+function applyFilter(results) {
+  return results.filter(r => {
+    if (activeFilter === "all")   return true;
+    if (activeFilter === "buy")   return r.signal === "buy";
+    if (activeFilter === "watch") return r.signal === "watch";
+    if (activeFilter === "dax")   return r.group === "dax";
+    if (activeFilter === "us")    return r.group === "us";
+    return true;
+  });
+}
+
+async function apiFetch(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+async function fetchData(ticker) {
+  const [quoteData, rsiData, smaData] = await Promise.all([
+    apiFetch(`${BASE}/quote/${ticker}?apikey=${API_KEY}`),
+    apiFetch(`${BASE}/technical_indicator/daily/${ticker}?period=14&type=rsi&apikey=${API_KEY}`),
+    apiFetch(`${BASE}/technical_indicator/daily/${ticker}?period=20&type=sma&apikey=${API_KEY}`)
+  ]);
+
+  const quote = Array.isArray(quoteData) && quoteData[0] ? quoteData[0] : null;
+  const rsi   = Array.isArray(rsiData)   && rsiData[0]   ? rsiData[0].rsi   : null;
+  const sma20 = Array.isArray(smaData)   && smaData[0]   ? smaData[0].sma   : null;
+
+  return { quote, rsi, sma20 };
+}
+
+async function scanStocks() {
+  if (!API_KEY || API_KEY === "DEIN_API_KEY_HIER") {
+    document.getElementById("apiBanner").style.display = "block";
+    document.getElementById("output").innerHTML =
+      `<div class="error-box">Kein API-Key konfiguriert.<br>Öffne die HTML-Datei und trage deinen FMP-Key in die Variable <strong>API_KEY</strong> ein.</div>`;
+    document.getElementById("resultCount").textContent = "–";
+    return;
+  }
+
+  document.getElementById("apiBanner").style.display = "none";
+
+  const btn = document.getElementById("refreshBtn");
+  btn.classList.add("loading");
+  btn.disabled = true;
+  document.getElementById("resultCount").textContent = "scannt …";
+
+  document.getElementById("output").innerHTML = `
+    <div class="section-label">Scanne ${WATCHLIST.length} Werte …</div>
+    <div class="card-list">
+      ${[1,2,3,4].map(() => '<div class="skeleton-card"></div>').join("")}
+    </div>`;
+
+  const results = [];
+
+  for (const stock of WATCHLIST) {
+    try {
+      const { quote, rsi, sma20 } = await fetchData(stock.ticker);
+      if (!quote || rsi === null) continue;
+
+      const price    = quote.price;
+      const aboveSMA = sma20 !== null ? price > sma20 : false;
+
+      // Kriterien: RSI < 45 UND Kurs über SMA20
+      if (rsi < 45 && aboveSMA) {
+        results.push({
+          ticker: stock.ticker,
+          name:   stock.name,
+          group:  stock.group,
+          cur:    stock.cur,
+          price,
+          rsi:    parseFloat(rsi.toFixed(1)),
+          sma20,
+          signal: rsi < 35 ? "buy" : "watch",
+          target: parseFloat((price * (1 + SELL_TARGET_PCT / 100)).toFixed(2))
+        });
+      }
+    } catch (err) {
+      console.warn(`[${stock.ticker}]`, err.message);
+    }
+  }
+
+  // Sortierung: buy zuerst, dann RSI aufsteigend
+  results.sort((a, b) => {
+    if (a.signal !== b.signal) return a.signal === "buy" ? -1 : 1;
+    return a.rsi - b.rsi;
+  });
+
+  allResults = results;
+
+  const now = new Date();
+  document.getElementById("timestamp").textContent =
+    "Stand " + now.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+
+  btn.classList.remove("loading");
+  btn.disabled = false;
+
+  renderCards(results);
+}
+
+function renderCards(results) {
+  const filtered  = applyFilter(results);
+  const buyZone   = filtered.filter(r => r.signal === "buy");
+  const watchZone = filtered.filter(r => r.signal === "watch");
+
+  document.getElementById("resultCount").textContent =
+    filtered.length === 0 ? "Kein Treffer" : `${filtered.length} Treffer`;
+
+  const out = document.getElementById("output");
+
+  if (filtered.length === 0) {
+    out.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📡</div>
+        <div class="empty-title">Keine Signale</div>
+        <div class="empty-sub">Aktuell erfüllt kein Wert die Kriterien<br>RSI &lt; 45 + Kurs über 20-Tage-Schnitt.</div>
+      </div>`;
+    return;
+  }
+
+  let html = "";
+
+  if (buyZone.length > 0) {
+    html += `<div class="section-label">BUY-IN ZONE · ${buyZone.length}</div>
+             <div class="card-list">${buyZone.map(buildCard).join("")}</div>`;
+  }
+
+  if (watchZone.length > 0) {
+    if (buyZone.length > 0) html += `<div class="spacer-section"></div>`;
+    html += `<div class="section-label">WATCH · ${watchZone.length}</div>
+             <div class="card-list">${watchZone.map(buildCard).join("")}</div>`;
+  }
+
+  out.innerHTML = html;
+}
+
+function fmt(price) {
+  return price < 10 ? price.toFixed(3) : price.toFixed(2);
+}
+
+function buildCard(r) {
+  const isBuy = r.signal === "buy";
+  return `
+  <div class="card ${isBuy ? "buy-zone" : ""}">
+    <div class="card-left">
+      <div class="card-ticker">${r.ticker}</div>
+      <div class="card-name">${r.name}</div>
+      <div class="card-stats">
+        <div class="stat">
+          <span class="stat-label">RSI 14</span>
+          <span class="stat-value ${isBuy ? "rsi-hot" : "rsi-warm"}">${r.rsi}</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-label">SMA 20</span>
+          <span class="stat-value">${r.cur}${r.sma20 ? fmt(r.sma20) : "–"}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-right">
+      <span class="price">${r.cur}${fmt(r.price)}</span>
+      <span class="signal-badge ${isBuy ? "signal-buy" : "signal-watch"}">
+        ${isBuy ? "BUY-IN ZONE" : "WATCH"}
+      </span>
+    </div>
+    <div class="target-line">
+      <span class="target-label">ZIEL</span>
+      <span class="target-price">${r.cur}${fmt(r.target)}</span>
+      <span class="target-pct">+${SELL_TARGET_PCT}%</span>
+    </div>
+  </div>`;
+}
+
+// Direkt beim Laden starten
+window.addEventListener("DOMContentLoaded", scanStocks);
+</script>
+</body>
+</html>
